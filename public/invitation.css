@@ -1,0 +1,242 @@
+/* Genel Ayarlar */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Quicksand', sans-serif;
+}
+
+body {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Yerleşim ve Düzen */
+.container {
+    width: 100vw;
+    height: 100vh;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+.glass {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+.spacer {
+    height: 10px;
+}
+
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.button-row {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: 100%;
+}
+
+.button-row > button {
+    flex: 1;
+}
+
+.full-width-button {
+    width: 100%;
+}
+
+/* İçerik Detayları */
+#invitationDetail {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.content-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+#headline {
+    font-family: 'Philosopher', sans-serif;
+    font-size: 30px;
+}
+
+#description {
+    font-family: 'Courgette', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* Modallar */
+.map-modal-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.map-modal-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.map-modal-content iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.map-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #000000;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.form-modal-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.form-modal-content {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
+
+.form-modal-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.form-modal-header h3 {
+    margin: 0;
+    font-size: 24px;
+    color: #fff;
+}
+
+.form-close-modal {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.form-modal-body {
+    margin-bottom: 20px;
+}
+
+.form-modal-body form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #fff;
+    font-family: 'Quicksand', sans-serif;
+}
+
+.form-modal-body form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.form-modal-footer {
+    display: flex;
+    justify-content: center;
+}
+
+.form-submit-button {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 12px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Quicksand', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.form-submit-button i {
+    font-size: 18px;
+}
+
+/* Medya Sorguları */
+@media (min-width: 1024px) {
+    .container {
+        width: 25vw !important;
+        height: 90vh !important;
+        max-width: 25vw;
+        border-radius: 10px;
+    }
+}
+
+@media (max-width: 640px) {
+    #invitationDetail {
+        margin-top: 30px;
+    }
+    #buttons {
+        margin-bottom: 30px;
+    }
+}
