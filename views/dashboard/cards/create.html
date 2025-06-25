@@ -1,0 +1,418 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2 fw-bold">{{.Title}}</h1>
+  <a href="/dashboard/cards" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+    <i class="bi bi-arrow-left"></i> Listeye Dön
+  </a>
+</div>
+<div class="card card-glass mb-4">
+  <div class="card-body">
+    <form method="POST" action="/dashboard/cards/create" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ .CsrfToken }}">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Ad Soyad / Firma</label>
+          <input type="text" class="form-control" name="name" value="{{if .FormData}}{{.FormData.Name}}{{end}}"
+            required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Kullanıcı Adı</label>
+          <div class="input-group">
+            <span class="input-group-text">davet.link/@</span>
+            <input type="text" class="form-control" name="slug" id="slug"
+              value="{{if .FormData}}{{.FormData.Slug}}{{end}}" required pattern="[a-zA-Z0-9\-_.]+"
+              title="Sadece harf, rakam, tire (-), alt tire (_) ve nokta (.) kullanabilirsiniz.">
+            <button type="button" id="check-slug-button" class="btn btn-outline-secondary">Kontrol Et</button>
+          </div>
+          <div id="slug-feedback" class="form-text"></div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Ünvan / Başlık</label>
+          <input type="text" class="form-control" name="title" value="{{if .FormData}}{{.FormData.Title}}{{end}}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Profil Fotoğrafı</label>
+          <input type="file" class="form-control" name="photo" id="photo"
+            accept="image/jpeg,image/png,image/jpg,image/gif">
+          <div class="form-text">Maks. 2MB. JPG, PNG, GIF.</div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Telefon</label>
+          <div class="input-group">
+            <input type="tel" class="form-control" name="telephone" id="telephone"
+              value="{{if .FormData}}{{.FormData.Telephone}}{{end}}" placeholder="0XXXXXXXXXX">
+            <span class="input-group-text p-0">
+              <input type="checkbox" id="normalize_phone_checkbox" class="form-check-input ms-2">
+              <label for="normalize_phone_checkbox" class="ms-1 mb-0 small"
+                title="Serbest formatı (örn: 444 4 444 veya 0216 000 00 00) kullanmak için işaretleyin">Serbest
+                Format</label>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">E-posta</label>
+          <input type="email" class="form-control" name="email" value="{{if .FormData}}{{.FormData.Email}}{{end}}">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Web Sitesi</label>
+          <input type="url" class="form-control" name="website_url"
+            value="{{if .FormData}}{{.FormData.WebsiteUrl}}{{end}}" placeholder="https://....">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Mağaza Linki</label>
+          <input type="url" class="form-control" name="store_url" value="{{if .FormData}}{{.FormData.StoreUrl}}{{end}}"
+            placeholder="https://....">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label class="form-label">Konum (Google Haritalar)</label>
+          <div class="input-group mb-2">
+            <input type="text" class="form-control" id="venue_input" placeholder="Lokasyon Adı (Geçici)">
+            <input type="text" class="form-control" id="address_input" placeholder="Açık Adres (Geçici)">
+            <button type="button" class="btn btn-outline-primary" id="generateLocationUrlButton">URL Oluştur</button>
+            <button type="button" class="btn btn-outline-danger hidden" id="deleteLocationUrlButton">Sil</button>
+          </div>
+          <!-- DEĞİŞİKLİK: value alanı `if` bloğu içine alındı -->
+          <input type="url" class="form-control bg-light" name="location" id="location"
+            value="{{if .FormData}}{{.FormData.Location}}{{end}}" readonly
+            placeholder="Mekan/Adres girip URL oluşturun...">
+          <div id="generatedUrlFeedback" class="form-text"></div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label class="form-label">IBAN Bilgileri</label>
+          <div id="iban-rows-container">
+            <!-- Bu blok zaten doğru, çünkü en dışta `.FormData` kontrolü var -->
+            {{if .FormData}}
+            {{range $i, $iban := .FormData.CardBanks}}
+            <div class="input-group mb-2 iban-group">
+              <select name="card_banks[{{$i}}][bank_id]" class="form-select" style="max-width: 180px;" required>
+                <option value="">Banka Seçiniz</option>
+                {{range $.Banks}}<option value="{{.ID}}" {{if eq .ID $iban.BankID}}selected{{end}}>{{.Name}}</option>
+                {{end}}
+              </select>
+              <input type="text" name="card_banks[{{$i}}][iban]" class="form-control" placeholder="IBAN Numarası"
+                value="{{$iban.IBAN}}" required>
+              <button type="button" class="btn btn-outline-danger remove-row" tabindex="-1">Sil</button>
+            </div>
+            {{end}}
+            {{end}}
+          </div>
+          <button type="button" class="btn btn-light btn-sm mt-2" id="add-iban"><i class="bi bi-plus"></i> Yeni IBAN
+            Ekle</button>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label class="form-label">Sosyal Medya Linkleri</label>
+          <div id="social-rows-container">
+            <!-- Bu blok da doğru -->
+            {{if .FormData}}
+            {{range $i, $sm := .FormData.CardSocialMedia}}
+            <div class="input-group mb-2 social-group">
+              <select name="card_social_media[{{$i}}][social_media_id]" class="form-select" style="max-width: 180px;"
+                required>
+                <option value="">Platform Seçiniz</option>
+                {{range $.SocialMedias}}<option value="{{.ID}}" {{if eq .ID $sm.SocialMediaID}}selected{{end}}>{{.Name}}
+                </option>{{end}}
+              </select>
+              <input type="url" name="card_social_media[{{$i}}][url]" class="form-control"
+                placeholder="Profil Linki (https://...)" value="{{$sm.URL}}" required>
+              <button type="button" class="btn btn-outline-danger remove-row" tabindex="-1">Sil</button>
+            </div>
+            {{end}}
+            {{end}}
+          </div>
+          <button type="button" class="btn btn-light btn-sm mt-2" id="add-social"><i class="bi bi-plus"></i> Yeni Sosyal
+            Medya Ekle</button>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label class="form-label">Durum</label>
+          <select class="form-select" name="is_active" required>
+            <!-- DEĞİŞİKLİK: `not .FormData` kontrolü ile varsayılan "Aktif" seçimi sağlandı -->
+            <option value="true" {{if or (not .FormData) (eq .FormData.IsActive "true" )}}selected{{end}}>Aktif</option>
+            <option value="false" {{if eq .FormData.IsActive "false" }}selected{{end}}>Pasif</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end">
+        <a href="/dashboard/cards" class="btn btn-secondary me-2">İptal</a>
+        <button type="submit" id="save-button" class="btn btn-primary">Kaydet</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Gizli Şablonlarda Değişiklik Yok, Zaten Doğruydular -->
+<template id="iban-row-template">
+  <div class="input-group mb-2 iban-group">
+    <select name="card_banks[__IBAN_INDEX__][bank_id]" class="form-select" style="max-width: 180px;" required>
+      <option value="">Banka Seçiniz</option>
+      {{range .Banks}}
+      <option value="{{.ID}}">{{.Name}}</option>
+      {{end}}
+    </select>
+    <input type="text" name="card_banks[__IBAN_INDEX__][iban]" class="form-control" placeholder="IBAN Numarası"
+      required>
+    <button type="button" class="btn btn-outline-danger remove-row" tabindex="-1">Sil</button>
+  </div>
+</template>
+
+<template id="social-row-template">
+  <div class="input-group mb-2 social-group">
+    <select name="card_social_media[__SOCIAL_INDEX__][social_media_id]" class="form-select" style="max-width: 180px;"
+      required>
+      <option value="">Platform Seçiniz</option>
+      {{range .SocialMedias}}
+      <option value="{{.ID}}">{{.Name}}</option>
+      {{end}}
+    </select>
+    <input type="url" name="card_social_media[__SOCIAL_INDEX__][url]" class="form-control"
+      placeholder="Profil Linki (https://...)" required>
+    <button type="button" class="btn btn-outline-danger remove-row" tabindex="-1">Sil</button>
+  </div>
+</template>
+
+<script src="/js/jquery-3.7.1.min.js"></script>
+<script src="/js/jquery.inputmask.min.js"></script>
+<script>
+  $(document).ready(function () {
+    // Telefon input mask/normalizasyon
+    const $phoneInput = $('#telephone');
+    const $normalizePhoneCheckbox = $('#normalize_phone_checkbox');
+    const phoneMask = "09999999999";
+    const placeholderMasked = "0XXXXXXXXXX";
+    const placeholderNormal = "Örn: 444 4 444 veya 0216 000 00 00";
+    const strictTRMaskPattern = /^0\d{10}$/;
+    const validNormalPattern = /^\+?\d*$/;
+    const stripCharsForNormalKeepPlusStart = (value) => {
+      if (!value) return "";
+      let val = String(value);
+      if (val.startsWith('+')) {
+        return '+' + val.substring(1).replace(/[^\d]/g, '');
+      }
+      return val.replace(/[^\d]/g, '');
+    };
+    function handleNormalPhoneInput(event) {
+      const input = event.target;
+      let originalValue = input.value;
+      let caretPos = input.selectionStart;
+      let newValue = stripCharsForNormalKeepPlusStart(originalValue);
+      if (originalValue !== newValue) {
+        input.value = newValue;
+        input.setSelectionRange(Math.min(caretPos, newValue.length), Math.min(caretPos, newValue.length));
+      }
+    }
+    function togglePhoneMaskAndBehavior() {
+      if ($normalizePhoneCheckbox.is(':checked')) {
+        $phoneInput.inputmask('remove');
+        $phoneInput.attr('placeholder', placeholderNormal);
+        $phoneInput.on('input.normalPhoneFilter', handleNormalPhoneInput);
+        $phoneInput.val(stripCharsForNormalKeepPlusStart($phoneInput.val()));
+      } else {
+        $phoneInput.off('input.normalPhoneFilter');
+        $phoneInput.inputmask(phoneMask);
+        $phoneInput.attr('placeholder', placeholderMasked);
+      }
+    }
+    const initialPhoneValue = $phoneInput.val() ? String($phoneInput.val()).trim() : "";
+    let setCheckboxChecked = false;
+    if (initialPhoneValue) {
+      if (!strictTRMaskPattern.test(initialPhoneValue)) {
+        setCheckboxChecked = true;
+      }
+    }
+    $normalizePhoneCheckbox.prop('checked', setCheckboxChecked);
+    togglePhoneMaskAndBehavior();
+    $normalizePhoneCheckbox.on('change', function () {
+      togglePhoneMaskAndBehavior();
+    });
+
+    // Slug kontrol
+    const $slugInput = $('#slug');
+    const $slugFeedback = $('#slug-feedback');
+    const $checkButton = $('#check-slug-button');
+    const $saveButton = $('#save-button');
+
+    $saveButton.prop('disabled', true);
+
+    let slugDebounceTimer;
+
+    function clearSlugFeedbackClasses() {
+      $slugFeedback.removeClass('text-danger text-success text-primary');
+    }
+
+    function performSlugCheck() {
+      $saveButton.prop('disabled', true);
+
+      const slugValue = $slugInput.val().trim();
+      clearSlugFeedbackClasses();
+      $slugFeedback.text('');
+
+      if (!/^[a-zA-Z0-9\-_.]+$/.test(slugValue) && slugValue !== '') {
+        $slugFeedback.text('Geçersiz karakterler.').addClass('text-danger');
+        return;
+      }
+      if (slugValue === '') {
+        $slugFeedback.text('Lütfen bir kullanıcı adı girin.').addClass('text-danger');
+        return;
+      }
+      if (slugValue.length < 3) {
+        $slugFeedback.text('En az 3 karakter olmalı.').addClass('text-primary');
+        return;
+      }
+
+      $slugFeedback.text('Kontrol ediliyor...').addClass('text-primary');
+      $checkButton.prop('disabled', true);
+
+      $.getJSON("/dashboard/cards/slug-check", { slug: slugValue }, function (data) {
+        clearSlugFeedbackClasses();
+        if (data.is_available) {
+          $slugFeedback.text('Kullanılabilir!').addClass('text-success');
+          $saveButton.prop('disabled', false);
+        } else {
+          $slugFeedback.text('Bu kullanıcı adı alınmış.').addClass('text-danger');
+        }
+        $checkButton.prop('disabled', false);
+      }).fail(function () {
+        clearSlugFeedbackClasses();
+        $slugFeedback.text('Kontrol sırasında bir hata oluştu.').addClass('text-danger');
+        $checkButton.prop('disabled', false);
+      });
+    }
+
+    if ($checkButton.length) {
+      $checkButton.on('click', performSlugCheck);
+    }
+
+    if ($slugInput.length) {
+      $slugInput.on('input', function () {
+        $saveButton.prop('disabled', true);
+
+        clearTimeout(slugDebounceTimer);
+        clearSlugFeedbackClasses();
+        $slugFeedback.text('Değişiklik yapıldı, lütfen tekrar kontrol edin.');
+      });
+    }
+
+    // Dinamik IBAN ve sosyal medya satırları için index güncelleme fonksiyonu
+    function setupDynamicRows(options) {
+      const { containerId, addButtonId, templateId, groupClass, namePlaceholder } = options;
+
+      const container = document.getElementById(containerId);
+      const addButton = document.getElementById(addButtonId);
+      const template = document.getElementById(templateId);
+
+      if (!container || !addButton || !template) {
+        console.error("Dinamik satır elemanları bulunamadı:", options);
+        return;
+      }
+
+      let index = container.getElementsByClassName(groupClass).length;
+
+      addButton.addEventListener('click', function () {
+        // 1. Template'in içeriğini güvenli bir şekilde klonla
+        const clone = template.content.cloneNode(true);
+
+        // 2. Klonun içindeki tüm input ve select'leri bul
+        const elements = clone.querySelectorAll('input, select');
+
+        // 3. Her birinin 'name' attribute'ünü güncelle
+        elements.forEach(el => {
+          el.name = el.name.replace(new RegExp(namePlaceholder, 'g'), index);
+        });
+
+        // 4. Klonu sayfaya ekle
+        container.appendChild(clone);
+
+        // 5. Index'i bir sonraki için artır
+        index++;
+      });
+
+      container.addEventListener('click', function (e) {
+        if (e.target && e.target.classList.contains('remove-row')) {
+          // Tıklanan butona en yakın .groupClass'ı bul ve sil
+          e.target.closest('.' + groupClass).remove();
+
+          // Sildikten sonra tüm satırları yeniden index'le
+          const rows = container.getElementsByClassName(groupClass);
+          Array.from(rows).forEach((row, newIndex) => {
+            const elements = row.querySelectorAll('input, select');
+            elements.forEach(el => {
+              el.name = el.name.replace(/\[\d+\]/, '[' + newIndex + ']');
+            });
+          });
+
+          // Global index'i de güncelle
+          index = rows.length;
+        }
+      });
+    }
+
+    // IBAN için kurulum
+    setupDynamicRows({
+      containerId: 'iban-rows-container',
+      addButtonId: 'add-iban',
+      templateId: 'iban-row-template',
+      groupClass: 'iban-group',
+      namePlaceholder: '__IBAN_INDEX__'
+    });
+
+    // Sosyal Medya için kurulum
+    setupDynamicRows({
+      containerId: 'social-rows-container',
+      addButtonId: 'add-social',
+      templateId: 'social-row-template',
+      groupClass: 'social-group',
+      namePlaceholder: '__SOCIAL_INDEX__'
+    });
+
+    // Google Maps konum linki üretici
+    const $locationUrlInput = $('#location');
+    const $feedbackSpan = $('#generatedUrlFeedback');
+    const $deleteButton = $('#deleteLocationUrlButton');
+    const $generateButton = $('#generateLocationUrlButton');
+    function toggleDeleteButtonVisibility() {
+      if ($locationUrlInput.val() && $locationUrlInput.val().trim() !== '') {
+        $deleteButton.removeClass('hidden');
+      } else {
+        $deleteButton.addClass('hidden');
+      }
+    }
+    $generateButton.on('click', function () {
+      const venue = $('#venue_input').val().trim();
+      const address = $('#address_input').val().trim();
+      if (!venue && !address) {
+        alert('Lütfen URL oluşturmak için Mekan Adı veya Adres girin!');
+        $feedbackSpan.text('').removeClass('text-success text-secondary');
+        return;
+      }
+      const queryParam = encodeURIComponent(venue + " " + address);
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${queryParam}`;
+      $locationUrlInput.val(mapsUrl);
+      $feedbackSpan.text('Konum URL\'si oluşturuldu/güncellendi.').removeClass('text-secondary').addClass('text-success');
+      toggleDeleteButtonVisibility();
+      setTimeout(() => { $feedbackSpan.text('').removeClass('text-success'); }, 5000);
+    });
+    $deleteButton.on('click', function () {
+      if (confirm('Mevcut konum URL\'sini silmek istediğinizden emin misiniz?')) {
+        $locationUrlInput.val('');
+        $feedbackSpan.text('Konum URL\'si silindi.').removeClass('text-success').addClass('text-secondary');
+        toggleDeleteButtonVisibility();
+        $('#venue_input').val('');
+        $('#address_input').val('');
+        setTimeout(() => { $feedbackSpan.text('').removeClass('text-success'); }, 3000);
+      }
+    });
+    toggleDeleteButtonVisibility();
+  });
+</script>

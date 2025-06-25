@@ -1,0 +1,69 @@
+<!-- Invitation Update -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title mb-0"><strong>{{.Title}}</strong></h3>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="/dashboard/invitations/update/{{.Invitation.ID}}">
+            <input type="hidden" name="csrf_token" value="{{ .CsrfToken }}">
+            <input type="hidden" name="id" value="{{.Invitation.ID}}">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Başlık</label>
+                <input type="text" class="form-control" name="title" value="{{if .FormData}}{{.FormData.Title}}{{else}}{{.Invitation.Title}}{{end}}" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Davetiye Key</label>
+                <input type="text" class="form-control" name="invitation_key" value="{{if .FormData}}{{.FormData.InvitationKey}}{{else}}{{.Invitation.InvitationKey}}{{end}}" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Kategori</label>
+                <select class="form-select" name="category_id" required>
+                  <option value="">Seçiniz</option>
+                  {{range .Categories}}
+                  <option value="{{.ID}}" {{if eq .ID $.Invitation.CategoryID}}selected{{end}}>{{.Name}}</option>
+                  {{end}}
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Kullanıcı</label>
+                <select class="form-select" name="user_id" required>
+                  <option value="">Seçiniz</option>
+                  {{range .Users}}
+                  <option value="{{.ID}}" {{if eq .ID $.Invitation.UserID}}selected{{end}}>{{.Name}}</option>
+                  {{end}}
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Tarih</label>
+                <input type="date" class="form-control" name="date" value="{{if .FormData}}{{.FormData.Date}}{{else}}{{.Invitation.Date}}{{end}}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Saat</label>
+                <input type="time" class="form-control" name="time" value="{{if .FormData}}{{.FormData.Time}}{{else}}{{.Invitation.Time}}{{end}}">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Açıklama</label>
+              <textarea class="form-control" name="description">{{if .FormData}}{{.FormData.Description}}{{else}}{{.Invitation.Description}}{{end}}</textarea>
+            </div>
+            <!-- InvitationDetail alanları örnek -->
+            <div class="mb-3">
+              <label class="form-label">Detay Başlık</label>
+              <input type="text" class="form-control" name="detail_title" value="{{if .FormData}}{{.FormData.DetailTitle}}{{else}}{{if .Invitation.InvitationDetail}}{{.Invitation.InvitationDetail.Title}}{{end}}{{end}}">
+            </div>
+            <!-- Katılımcılar bölümü kaldırıldı, sadece gösterim/düzenleme/silme için ayrı alan olacak -->
+            <button type="submit" class="btn btn-primary">Güncelle</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

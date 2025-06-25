@@ -1,0 +1,47 @@
+<!-- Katılımcı Listesi (Dashboard) -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <h3 class="card-title mb-0"><strong>Katılımcılar</strong></h3>
+          <a href="/dashboard/invitations" class="btn btn-sm btn-secondary float-end">Geri Dön</a>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>Ad Soyad</th>
+                  <th>Telefon</th>
+                  <th>Kişi Sayısı</th>
+                  <th>İşlemler</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{range $i, $p := .Participants}}
+                <tr>
+                  <td>{{$p.ID}}</td>
+                  <td>{{$p.Title}}</td>
+                  <td>{{$p.PhoneNumber}}</td>
+                  <td>{{$p.GuestCount}}</td>
+                  <td>
+                    <a href="/dashboard/invitations/participants/update/{{$p.ID}}" class="btn btn-sm btn-primary">Düzenle</a>
+                    <form method="POST" action="/dashboard/invitations/participants/delete/{{$p.ID}}" class="d-inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                      <input type="hidden" name="_method" value="DELETE">
+                      <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                    </form>
+                  </td>
+                </tr>
+                {{else}}
+                <tr><td colspan="5" class="text-center">Katılımcı bulunamadı.</td></tr>
+                {{end}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

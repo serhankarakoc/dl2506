@@ -1,0 +1,69 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2 fw-bold">{{.Title}}</h1>
+</div>
+<div class="row g-4">
+  <div class="col-md-4">
+    <div class="card card-glass h-100 animate-fadeInUp">
+      <a href="/dashboard/users" class="card-badge text-decoration-none text-white" title="Kullanıcıları Görüntüle">
+        <i class="bi bi-eye"></i>
+      </a>
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-3">
+          <i class="bi bi-people-fill display-5"></i>
+          <div>
+            <h5 class="card-title mb-1">Kullanıcılar</h5>
+            <p class="card-text fs-4 fw-semibold">{{ .UserCount }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-glass h-100 animate-fadeInUp animate-delay-1">
+      <a href="/dashboard/cards" class="card-badge text-decoration-none text-white" title="Kartvizitleri Görüntüle">
+        <i class="bi bi-eye"></i>
+      </a>
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-3">
+          <i class="bi bi-person-vcard-fill display-5"></i>
+          <div>
+            <h5 class="card-title mb-1">Kartvizitler</h5>
+            <p class="card-text fs-4 fw-semibold">{{ .CardCount }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-glass h-100 animate-fadeInUp animate-delay-2">
+      <a href="/dashboard/invitations" class="card-badge text-decoration-none text-white"
+        title="Davetiye Listesini Görüntüle">
+        <i class="bi bi-eye"></i>
+      </a>
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-3">
+          <i class="bi bi-envelope-paper-fill display-5"></i>
+          <div>
+            <h5 class="card-title mb-1">Davetiyeler</h5>
+            <p class="card-text fs-4 fw-semibold">{{ .InvitationCount }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card mt-4 card-glass animate-fadeInUp animate-delay-2">
+  <div class="card-header bg-transparent border-0 fw-semibold fs-5 text-center">Genel Bilgiler</div>
+  <div class="card-body text-center">
+    <p class="mb-0">Hoş geldiniz! Bu panel Bootstrap 5 ile modern, profesyonel ve mobil uyumlu olarak
+      hazırlanmıştır. Tasarımda gelişmiş cam efekti, gradientler, animasyonlar ve modern badge'ler kullanılmıştır.
+    </p>
+  </div>
+</div>
+<div class="mt-5">
+  <h2 class="fw-bold mb-3">Uzun İçerik Başlığı</h2>
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur
+    consectetur, nisl nisl consectetur nisl, euismod euismod nisi nisi euismod. Pellentesque euismod, nisi eu
+    consectetur consectetur, nisl nisl consectetur nisl, euismod euismod nisi nisi euismod. Pellentesque euismod,
+    nisi eu consectetur consectetur, nisl nisl consectetur nisl, euismod euismod nisi nisi euismod.</p>
+</div>

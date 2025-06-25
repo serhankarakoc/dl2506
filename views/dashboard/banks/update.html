@@ -1,0 +1,32 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2 fw-bold">{{.Title}}</h1>
+  <a href="/dashboard/banks" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+    <i class="bi bi-arrow-left"></i> Listeye Dön
+  </a>
+</div>
+<div class="card card-glass mb-4">
+  <div class="card-body">
+    <form method="POST" action="/dashboard/banks/update/{{.Bank.ID}}">
+      <input type="hidden" name="csrf_token" value="{{ .CsrfToken }}">
+      <input type="hidden" name="id" value="{{.Bank.ID}}">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Banka Adı</label>
+          <input type="text" class="form-control" name="name"
+            value="{{if .FormData}}{{.FormData.Name}}{{else}}{{.Bank.Name}}{{end}}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Durum</label>
+          <select class="form-select" name="is_active" required>
+            <option value="true" {{if or (and .FormData (eq .FormData.IsActive "true")) (and (not .FormData) .Bank.IsActive)}}selected{{end}}>Aktif</option>
+            <option value="false" {{if or (and .FormData (ne .FormData.IsActive "true")) (and (not .FormData) (not .Bank.IsActive))}}selected{{end}}>Pasif</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end">
+        <a href="/dashboard/banks" class="btn btn-secondary me-2">İptal</a>
+        <button type="submit" class="btn btn-primary">Kaydet</button>
+      </div>
+    </form>
+  </div>
+</div>

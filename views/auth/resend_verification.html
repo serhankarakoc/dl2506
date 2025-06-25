@@ -1,0 +1,18 @@
+<div class="auth-card card card-glass p-4 p-md-5 shadow-lg animate-fadeInUp" style="max-width: 410px; width: 100%;">
+  <div class="text-center mb-4">
+    <i class="bi bi-envelope-check display-4 text-primary mb-2"></i>
+    <h2 class="fw-bold mb-1" style="font-size:1.45rem;">Doğrulama Maili Gönder</h2>
+    <p class="text-muted mb-0" style="font-size:1rem;">E-posta adresinizi girin, doğrulama maili gönderelim.</p>
+  </div>
+  <form method="POST" action="/auth/resend-verification">
+    <input type="hidden" name="csrf_token" value="{{ .CsrfToken }}">
+    <div class="mb-3">
+      <label for="resendEmail" class="form-label">E-posta</label>
+      <input type="email" class="form-control" id="resendEmail" name="email" placeholder="E-posta adresiniz" required>
+    </div>
+    <button type="submit" class="btn btn-primary w-100 fw-semibold py-2 mt-2">Doğrulama Maili Gönder</button>
+  </form>
+  <div class="text-center mt-3" style="font-size:0.97rem;">
+    <a href="/auth/login" class="fw-semibold">Girişe Dön</a>
+  </div>
+</div>
